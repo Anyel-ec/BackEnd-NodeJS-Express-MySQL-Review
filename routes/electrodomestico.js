@@ -60,4 +60,32 @@ router.get('/electrodomestico/:id', (req, res) => {
     });
 });
 
+
+router.put('/electrodomestico/:id', (req, res) => {
+    console.log('PUT /electrodomestico/:id');
+    getConnection(function(error, conn) {
+        if (error) {
+            res.sendStatus(400);
+            return;
+        }
+
+        const { id } = req.params;
+        const { cantidad } = req.body;
+        conn.query('UPDATE electrodomestico SET cantidad = ? WHERE id_electrodomestico = ?', [cantidad, id], function(error, result) {
+            conn.release();
+            if (error) {
+                res.status(400).send('No se ha podido actualizar los datos');
+                return;
+            }
+
+            if (result.affectedRows === 0) {
+                res.status(404).send('Electrodoméstico no encontrado');
+                return;
+            }
+
+            res.status(200).send('Electrodoméstico actualizado correctamente');
+        });
+    });
+});
+
 module.exports = router;
