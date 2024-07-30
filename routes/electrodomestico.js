@@ -12,7 +12,7 @@ router.get('/electrodomestico/:id', (req, res) => {
         
         const { id } = req.params;
         conn.query('SELECT * FROM electrodomestico WHERE id_electrodomestico = ?', [id], function(error, rows) {
-            conn.release();
+            //conn.release();
             if (error) {
                 res.status(400).send('No se ha podido obtener los datos');
                 return;
@@ -72,18 +72,25 @@ router.put('/electrodomestico/:id', (req, res) => {
         const { id } = req.params;
         const { cantidad } = req.body;
         conn.query('UPDATE electrodomestico SET cantidad = ? WHERE id_electrodomestico = ?', [cantidad, id], function(error, result) {
-            conn.release();
+           //  conn.release(); no dar error despues de actualziar
             if (error) {
                 res.status(400).send('No se ha podido actualizar los datos');
+                console.log('No se ha podido actualizar los datos');
+
                 return;
             }
 
             if (result.affectedRows === 0) {
                 res.status(404).send('Electrodoméstico no encontrado');
+                console.log('Electrodoméstico no encontrado');
+
                 return;
             }
 
-            res.status(200).send('Electrodoméstico actualizado correctamente');
+            // es importante mandar en json para que no haya error
+
+            res.json({ message: 'Electrodoméstico actualizado correctamente' });
+            console.log('Electrodoméstico actualizado correctamente');
         });
     });
 });
